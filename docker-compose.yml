@@ -24,6 +24,7 @@ services:
       - .env
     depends_on:
       - chamados-db
+    command: sh -c "npx prisma generate && npm run dev"
 
 volumes:
   dbdata:
