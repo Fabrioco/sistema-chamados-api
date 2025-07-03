@@ -1,9 +1,15 @@
-import { registerSchema } from "../dtos/register.dto";
-import { loginSchema } from "../dtos/login.dto";
 import { Request, Response } from "express";
-import authService from "./auth.service";
+import { AuthService } from "./auth.service";
+import { registerSchema } from "./dtos/register.dto";
+import { loginSchema } from "./dtos/login.dto";
 
 class AuthUserController {
+  private authService: AuthService;
+
+  constructor() {
+    this.authService = new AuthService();
+  }
+
   async register(req: Request, res: Response): Promise<void> {
     try {
       const data = req.body;
@@ -20,7 +26,7 @@ class AuthUserController {
         return;
       }
 
-      const user = await authService.register(data);
+      const user = await this.authService.register(data);
       res.status(201).json(user);
     } catch (error) {
       if (error instanceof Error) {
@@ -47,7 +53,7 @@ class AuthUserController {
         return;
       }
 
-      const user = await authService.login(data);
+      const user = await this.authService.login(data);
 
       res.status(200).json(user);
     } catch (error) {
