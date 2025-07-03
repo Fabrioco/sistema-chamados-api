@@ -1,7 +1,6 @@
 import { RegisterDTO } from "./dtos/register.dto";
 import { LoginDTO } from "./dtos/login.dto";
 import { UserRepository } from "./user.repository";
-import { comparePassword } from "../../utils/compare-password";
 
 export class AuthService {
   private userRepository: UserRepository;
@@ -17,6 +16,8 @@ export class AuthService {
       throw new Error("Usuário já cadastrado");
     }
 
+    data.password = await this.userRepository.hashPassword(data.password);
+
     const user = await this.userRepository.create(data);
     return user;
   }
@@ -26,12 +27,17 @@ export class AuthService {
 
     if (
       !foundUser ||
-      !(await comparePassword(data.password, foundUser.password))
+      !(await this.userRepository.comparePassword(
+        data.password,
+        foundUser.password
+      ))
     ) {
       throw new Error("Credenciais inválidas");
     }
 
+    const token = this.userRepository.createToken(foundUser.email);
+
     delete foundUser.password;
-    return foundUser;
+    return { ...foundUser, token };
   }
 }
