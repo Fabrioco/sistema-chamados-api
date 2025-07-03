@@ -10,7 +10,7 @@ class AuthUserController {
     this.authService = new AuthService();
   }
 
-  async register(req: Request, res: Response): Promise<void> {
+  register = async (req: Request, res: Response): Promise<void> => {
     try {
       const data = req.body;
       const validation = await registerSchema.safeParseAsync(data);
@@ -35,9 +35,9 @@ class AuthUserController {
       }
       res.status(500).json({ error: "Internal server error" });
     }
-  }
+  };
 
-  async login(req: Request, res: Response): Promise<void> {
+  login = async (req: Request, res: Response): Promise<void> => {
     try {
       const data = req.body;
       const validation = await loginSchema.safeParseAsync(data);
@@ -61,7 +61,7 @@ class AuthUserController {
         res.status(400).json({ error: error.message });
       }
     }
-  }
+  };
 }
 
 export default new AuthUserController();
