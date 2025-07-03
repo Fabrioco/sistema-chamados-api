@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 export class UserRepository {
   async findUnique(email: string) {
     return await prisma.user.findUnique({
-      email,
+      where: { email },
     });
   }
 
