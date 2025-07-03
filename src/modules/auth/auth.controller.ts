@@ -55,6 +55,13 @@ class AuthUserController {
 
       const user = await this.authService.login(data);
 
+      const token = user.token;
+      delete user.token;
+
+      res.cookie("token", token, {
+        httpOnly: true,
+      });
+
       res.status(200).json(user);
     } catch (error) {
       if (error instanceof Error) {
