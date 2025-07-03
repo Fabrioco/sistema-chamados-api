@@ -4,35 +4,34 @@ import { UserRepository } from "./user.repository";
 import { comparePassword } from "../../utils/compare-password";
 
 export class AuthService {
-  private UserRepository: UserRepository;
+  private userRepository: UserRepository;
 
   constructor() {
-    this.UserRepository = new UserRepository();
+    this.userRepository = new UserRepository();
   }
-  async register(data: RegisterDTO) {
-    const verifyUser = await this.UserRepository.findUnique(data.email);
 
-    if (verifyUser) {
-      throw new Error("Usuário já cadastrado");
+  async register(data: RegisterDTO) {
+    const existingUser = await this.userRepository.findUnique(data.email);
+
+    if (existingUser) {
+      throw new Error("Usuário já cadastrado");
     }
 
-    const user = await this.UserRepository.create(data);
+    const user = await this.userRepository.create(data);
     return user;
   }
 
   async login(data: LoginDTO) {
-    const findUser = await this.UserRepository.findUnique(data.email);
+    const foundUser = await this.userRepository.findUnique(data.email);
 
     if (
-      !findUser ||
-      !(await comparePassword(data.password, findUser.password))
+      !foundUser ||
+      !(await comparePassword(data.password, foundUser.password))
     ) {
-      throw new Error("Credenciais inválidas");
+      throw new Error("Credenciais inválidas");
     }
 
-    delete findUser.password;
-    const user = findUser;
-
-    return user;
+    delete foundUser.password;
+    return foundUser;
   }
 }
