@@ -22,3 +22,26 @@ model User {
     @@map("users")
 }
 
+model Ticket {
+    id          String   @id @default(cuid())
+    title       String
+    description String
+    userId      String
+    category    String
+    priority    TicketPriority
+    status      TicketStatus
+
+    @@map("tickets")
+}
+
+enum TicketPriority {
+    LOW
+    MEDIUM
+    HIGH
+}
+
+enum TicketStatus {
+    OPEN
+    CLOSED
+}
+
