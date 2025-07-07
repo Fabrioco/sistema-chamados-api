@@ -15,6 +15,7 @@ services:
   chamados-api:
     build: .
     container_name: chamados-api
+    restart: no
     ports:
       - "${PORT}:3333"
     volumes:
@@ -24,7 +25,7 @@ services:
       - .env
     depends_on:
       - chamados-db
-    command: sh -c "npx prisma generate && npm run dev"
+    command: sh -c "npx prisma generate && npx prisma migrate deploy && npm run test"
 
 volumes:
   dbdata:
