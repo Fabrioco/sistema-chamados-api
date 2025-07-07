@@ -1,6 +1,6 @@
 import { expect, it, describe, beforeAll, afterAll, beforeEach } from "vitest";
 import request from "supertest";
-import app from "../../app";
+import app from "../app";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -50,5 +50,12 @@ describe("Tickets", () => {
     expect(response.status).toBe(200);
     expect(response.body).toHaveLength(1); // espera só 1 (criado no beforeEach)
     expect(response.body[0]).toHaveProperty("title", "Ticket 1");
+  });
+
+  it("should get a ticket by id", async () => {
+    const response = await request(app).get("/tickets/1");
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("title", "Ticket 1");
   });
 });
