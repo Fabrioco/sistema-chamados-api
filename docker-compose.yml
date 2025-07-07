@@ -3,29 +3,29 @@ version: "3.8"
 services:
   chamados-db:
     image: mysql:5.7
-    container_name: chamados-db
-    ports:
-      - "${MYSQL_PORT}:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "${MYSQL_PORT}:3306"
     volumes:
       - dbdata:/var/lib/mysql
 
   chamados-api:
     build: .
-    container_name: chamados-api
-    restart: no
     ports:
       - "${PORT}:3333"
-    volumes:
-      - .:/app
-      - /app/node_modules
-    env_file:
-      - .env
     depends_on:
       - chamados-db
-    command: sh -c "npx prisma generate && npx prisma migrate deploy && npm run test"
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      NODE_ENV: development
+      JWT_SECRET: ${JWT_SECRET}
+    command: npm run dev
+    restart: unless-stopped
 
 volumes:
   dbdata:
