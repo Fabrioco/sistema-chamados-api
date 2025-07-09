@@ -37,7 +37,6 @@ export class AuthService {
 
     const token = this.userRepository.createToken(foundUser.email);
 
-    delete foundUser.password;
     return { ...foundUser, token };
   }
 }
